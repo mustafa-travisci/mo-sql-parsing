@@ -7,7 +7,13 @@
 # Author: Kyle Lahnakoski (kyle@lahnakoski.com)
 #
 
+from time import time
+
+start = time()
 from moz_sql_parser import parse
+end = time()
+
+print(f"import time = {str(round(end-start, 2))} seconds")
 
 parse("select *")
 
