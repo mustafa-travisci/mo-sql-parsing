@@ -10,14 +10,13 @@ from __future__ import absolute_import, division, unicode_literals
 
 from unittest import TestCase
 
-from mo_parsing.debug import Debugger
 from moz_sql_parser import parse
 
 
 class TestSqlServer(TestCase):
     def test_select_top_5(self):
         sql = """
-        select	TOP (5)
+        select TOP (5)
             country_code,
             impact_code,
             impact_description,

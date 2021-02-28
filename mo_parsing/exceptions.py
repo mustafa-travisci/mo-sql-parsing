@@ -136,22 +136,7 @@ class ParseSyntaxException(ParseException):
     that parsing is to stop immediately because an unbacktrackable
     syntax error has been found.
     """
-
     __slots__ = []
-
-
-# ~ class ReparseException(ParseException):
-# ~ """Experimental class - parse actions can raise this exception to cause
-# ~ mo_parsing to reparse the input string:
-# ~ - with a modified input string, and/or
-# ~ - with a modified start location
-# ~ Set the values of the ReparseException in the constructor, and raise the
-# ~ exception in a parse action to cause mo_parsing to use the new string/location.
-# ~ Setting the values as None causes no change to be made.
-# ~ """
-# ~ def __init_( self, newstring, restartLoc ):
-# ~ self.newParseText = newstring
-# ~ self.reparseLoc = restartLoc
 
 
 class RecursiveGrammarException(Exception):
