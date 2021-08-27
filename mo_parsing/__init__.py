@@ -25,26 +25,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-from mo_parsing.engine import Engine
-from mo_parsing import engine
+from mo_parsing import whitespaces
 from mo_parsing.core import ParserElement, _PendingSkip
-from mo_parsing.enhancement import (
-    Combine,
-    Dict,
-    FollowedBy,
-    Forward,
-    Group,
-    NotAny,
-    OneOrMore,
-    Optional,
-    ParseEnhancement,
-    PrecededBy,
-    SkipTo,
-    Suppress,
-    TokenConverter,
-    ZeroOrMore,
-    Many,
-)
+from mo_parsing.enhancement import *
 from mo_parsing.exceptions import (
     ParseException,
     ParseException,
@@ -52,21 +35,19 @@ from mo_parsing.exceptions import (
     RecursiveGrammarException,
 )
 from mo_parsing.expressions import And, MatchAll, MatchFirst, Or, ParseExpression
+from mo_parsing.whitespaces import Whitespace
 
-engine.PLAIN_ENGINE = Engine("").use()
-engine.STANDARD_ENGINE = Engine().use()
-
+whitespaces.NO_WHITESPACE = Whitespace("").use()
+whitespaces.STANDARD_WHITESPACE = Whitespace().use()
 
 from mo_parsing.infix import LEFT_ASSOC, RIGHT_ASSOC, infixNotation
 from mo_parsing.regex import Regex
-from mo_parsing.results import ParseResults, engine
 from mo_parsing.tokens import (
     CaselessKeyword,
     CaselessLiteral,
     Char,
     CloseMatch,
     Empty,
-    GoToColumn,
     LineEnd,
     LineStart,
     NoMatch,
@@ -84,8 +65,6 @@ from mo_parsing.tokens import (
 )
 
 
-
-
 __all__ = [
     "And",
     "AnyChar",
@@ -98,7 +77,6 @@ __all__ = [
     "Empty",
     "FollowedBy",
     "Forward",
-    "GoToColumn",
     "Group",
     "Keyword",
     "LineEnd",

@@ -3,7 +3,7 @@ import inspect
 
 from mo_dots import is_many, is_null
 from mo_future import is_text, text, NEXT, zip_longest, MutableMapping
-from mo_imports import expect, export
+from mo_imports import expect
 
 from mo_parsing.utils import Log, listwrap
 from mo_parsing.utils import is_forward, forward_type
@@ -11,7 +11,16 @@ from mo_parsing.utils import is_forward, forward_type
 USE_ATTRIBUTE_ACCESS = False
 
 
-Suppress, ParserElement, NO_PARSER, NO_RESULTS, Group, Dict, Token, Empty = expect("Suppress", "ParserElement", "NO_PARSER", "NO_RESULTS", "Group", "Dict", "Token", "Empty")
+Suppress, ParserElement, NO_PARSER, NO_RESULTS, Group, Dict, Token, Empty = expect(
+    "Suppress",
+    "ParserElement",
+    "NO_PARSER",
+    "NO_RESULTS",
+    "Group",
+    "Dict",
+    "Token",
+    "Empty",
+)
 
 
 class ParseResults(object):
@@ -145,6 +154,11 @@ class ParseResults(object):
             return self[0] == other
         elif not self:
             return False
+        elif isinstance(other, dict):
+            for k, v in other.items():
+                if self[k] != v:
+                    return False
+            return True
         else:
             Log.error("do not know how to handle")
 
@@ -328,7 +342,7 @@ class ParseResults(object):
     def __radd__(self, other):
         if not other:  # happens when using sum() on parsers
             return self
-        other = engine.CURRENT.normalize(other)
+        other = engines.CURRENT.normalize(other)
         return other + self
 
     def __repr__(self):
@@ -504,4 +518,3 @@ class Annotation(ParseResults):
 
 
 MutableMapping.register(ParseResults)
-from mo_parsing import engine

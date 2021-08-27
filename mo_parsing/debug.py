@@ -7,7 +7,7 @@ from mo_parsing.utils import (
     lineno,
     col,
     stack_depth,
-    quote as plain_quote,
+    quote as plain_quote, Log,
 )
 
 DEBUGGING = False

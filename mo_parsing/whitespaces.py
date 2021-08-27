@@ -11,12 +11,12 @@ from mo_parsing.utils import Log, indent, quote, regex_range, alphanums, regex_i
 
 Literal, Token, Empty = expect("Literal", "Token", "Empty")
 
-CURRENT = None
-PLAIN_ENGINE = None
-STANDARD_ENGINE = None
+CURRENT = None  # THE CURRENT DEFINED WHITESPACE
+NO_WHITESPACE = None  # NOTHING IS WHITESPACE ENGINE
+STANDARD_WHITESPACE = None  # SIMPLE WHITESPACE
 
 
-class Engine(ParserElement):
+class Whitespace(ParserElement):
     def __init__(self, white=" \n\r\t"):
         self.literal = Literal
         self.keyword_chars = alphanums + "_$"
@@ -28,11 +28,24 @@ class Engine(ParserElement):
         self.regex = None
         self.expr = None
         self.set_whitespace(white)
-        self.previous = None  # WE MAINTAIN A STACK OF ENGINES
+        self.previous = []  # WE MAINTAIN A STACK OF ENGINES
+
+    def copy(self):
+        output = Whitespace(self.white_chars)
+        output.literal = self.literal
+        output.keyword_chars = self.keyword_chars
+        output.ignore_list = self.ignore_list
+        output.debugActions = self.debugActions
+        output.all_exceptions = self.all_exceptions
+        output.content = None
+        output.skips = {}
+        output.regex = self.regex
+        output.expr = self.expr
+        return output
 
     def __enter__(self):
         global CURRENT
-        self.previous = CURRENT  # WE MAINTAIN A STACK OF ENGINES
+        self.previous.append(CURRENT)  # WE MAINTAIN A STACK OF ENGINES
         CURRENT = self
         return self
 
@@ -40,15 +53,14 @@ class Engine(ParserElement):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """
-        ENSURE self IS NOT CURRENT
+        REMOVE THIS WHITESPACE CONTEXT
         :return:
         """
         global CURRENT
         if not self.previous:
-            Log.error("expecting engine to be released just once")
+            Log.error("expecting whitespace to be released just once")
 
-        CURRENT = self.previous
-        self.previous = None
+        CURRENT = self.previous.pop()
 
     def release(self):
         self.__exit__(None, None, None)
@@ -149,17 +161,17 @@ class Engine(ParserElement):
 
 
 class Backup(object):
-    def __init__(self, engine):
-        self.engine = engine
-        self.content = engine.content
-        self.skips = engine.skips
+    def __init__(self, whitespace):
+        self.whitespace = whitespace
+        self.content = whitespace.content
+        self.skips = whitespace.skips
 
     def __enter__(self):
         pass
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine.content = self.content
-        self.engine.skips = self.skips
+        self.whitespace.content = self.content
+        self.whitespace.skips = self.skips
 
 
 def noop(*args):
